@@ -1,3 +1,3 @@
 # airflow_first_project
 
-in this project i wnat to orchestrade a data pipiline using airflow, docker and postgress
+For this project I want to orchestrade a data pipiline using airflow, docker and postgress. Also create visualizations with an opensource BI tool called metabase.
