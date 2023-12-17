@@ -1,0 +1,32 @@
+[2023-12-17T18:00:47.201+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: test_dag.get_data_task manual__2023-12-17T18:00:44.403571+00:00 [queued]>
+[2023-12-17T18:00:47.209+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: test_dag.get_data_task manual__2023-12-17T18:00:44.403571+00:00 [queued]>
+[2023-12-17T18:00:47.210+0000] {taskinstance.py:1361} INFO - Starting attempt 1 of 2
+[2023-12-17T18:00:47.221+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): get_data_task> on 2023-12-17 18:00:44.403571+00:00
+[2023-12-17T18:00:47.226+0000] {standard_task_runner.py:57} INFO - Started process 323 to run task
+[2023-12-17T18:00:47.229+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'test_dag', 'get_data_task', 'manual__2023-12-17T18:00:44.403571+00:00', '--job-id', '186', '--raw', '--subdir', 'DAGS_FOLDER/test_dag.py', '--cfg-path', '/tmp/tmp5n6q0ak9']
+[2023-12-17T18:00:47.231+0000] {standard_task_runner.py:85} INFO - Job 186: Subtask get_data_task
+[2023-12-17T18:00:47.268+0000] {task_command.py:416} INFO - Running <TaskInstance: test_dag.get_data_task manual__2023-12-17T18:00:44.403571+00:00 [running]> on host 428d66685f6a
+[2023-12-17T18:00:47.481+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='test_dag' AIRFLOW_CTX_TASK_ID='get_data_task' AIRFLOW_CTX_EXECUTION_DATE='2023-12-17T18:00:44.403571+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2023-12-17T18:00:44.403571+00:00'
+[2023-12-17T18:00:48.321+0000] {taskinstance.py:1937} ERROR - Task failed with exception
+Traceback (most recent call last):
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 192, in execute
+    return_value = self.execute_callable()
+  File "/home/airflow/.local/lib/python3.8/site-packages/airflow/operators/python.py", line 209, in execute_callable
+    return self.python_callable(*self.op_args, **self.op_kwargs)
+  File "/opt/airflow/dags/test_dag.py", line 42, in get_data
+    df.to_csv('/opt/dags/data.csv', index=False)
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/core/generic.py", line 3772, in to_csv
+    return DataFrameRenderer(formatter).to_csv(
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/io/formats/format.py", line 1186, in to_csv
+    csv_formatter.save()
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/io/formats/csvs.py", line 240, in save
+    with get_handle(
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/io/common.py", line 737, in get_handle
+    check_parent_directory(str(handle))
+  File "/home/airflow/.local/lib/python3.8/site-packages/pandas/io/common.py", line 600, in check_parent_directory
+    raise OSError(rf"Cannot save file into a non-existent directory: '{parent}'")
+OSError: Cannot save file into a non-existent directory: '/opt/dags'
+[2023-12-17T18:00:48.331+0000] {taskinstance.py:1400} INFO - Marking task as UP_FOR_RETRY. dag_id=test_dag, task_id=get_data_task, execution_date=20231217T180044, start_date=20231217T180047, end_date=20231217T180048
+[2023-12-17T18:00:48.352+0000] {standard_task_runner.py:104} ERROR - Failed to execute job 186 for task get_data_task (Cannot save file into a non-existent directory: '/opt/dags'; 323)
+[2023-12-17T18:00:48.364+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 1
+[2023-12-17T18:00:48.379+0000] {taskinstance.py:2778} INFO - 0 downstream tasks scheduled from follow-on schedule check

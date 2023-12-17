@@ -1,0 +1,13 @@
+[2023-12-17T20:19:28.282+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=non-requeueable deps ti=<TaskInstance: test_dag.add_timestamp manual__2023-12-17T20:19:25.925203+00:00 [queued]>
+[2023-12-17T20:19:28.292+0000] {taskinstance.py:1159} INFO - Dependencies all met for dep_context=requeueable deps ti=<TaskInstance: test_dag.add_timestamp manual__2023-12-17T20:19:25.925203+00:00 [queued]>
+[2023-12-17T20:19:28.292+0000] {taskinstance.py:1361} INFO - Starting attempt 1 of 2
+[2023-12-17T20:19:28.308+0000] {taskinstance.py:1382} INFO - Executing <Task(PythonOperator): add_timestamp> on 2023-12-17 20:19:25.925203+00:00
+[2023-12-17T20:19:28.315+0000] {standard_task_runner.py:57} INFO - Started process 387 to run task
+[2023-12-17T20:19:28.320+0000] {standard_task_runner.py:84} INFO - Running: ['***', 'tasks', 'run', 'test_dag', 'add_timestamp', 'manual__2023-12-17T20:19:25.925203+00:00', '--job-id', '195', '--raw', '--subdir', 'DAGS_FOLDER/test_dag.py', '--cfg-path', '/tmp/tmpwbnd4uuf']
+[2023-12-17T20:19:28.324+0000] {standard_task_runner.py:85} INFO - Job 195: Subtask add_timestamp
+[2023-12-17T20:19:28.383+0000] {task_command.py:416} INFO - Running <TaskInstance: test_dag.add_timestamp manual__2023-12-17T20:19:25.925203+00:00 [running]> on host 86984f2c3dcc
+[2023-12-17T20:19:28.653+0000] {taskinstance.py:1662} INFO - Exporting env vars: AIRFLOW_CTX_DAG_OWNER='***' AIRFLOW_CTX_DAG_ID='test_dag' AIRFLOW_CTX_TASK_ID='add_timestamp' AIRFLOW_CTX_EXECUTION_DATE='2023-12-17T20:19:25.925203+00:00' AIRFLOW_CTX_TRY_NUMBER='1' AIRFLOW_CTX_DAG_RUN_ID='manual__2023-12-17T20:19:25.925203+00:00'
+[2023-12-17T20:19:28.666+0000] {python.py:194} INFO - Done. Returned value was: None
+[2023-12-17T20:19:28.674+0000] {taskinstance.py:1400} INFO - Marking task as SUCCESS. dag_id=test_dag, task_id=add_timestamp, execution_date=20231217T201925, start_date=20231217T201928, end_date=20231217T201928
+[2023-12-17T20:19:28.732+0000] {local_task_job_runner.py:228} INFO - Task exited with return code 0
+[2023-12-17T20:19:28.747+0000] {taskinstance.py:2778} INFO - 0 downstream tasks scheduled from follow-on schedule check
