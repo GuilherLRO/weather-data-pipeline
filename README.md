@@ -9,3 +9,6 @@ Checkpoints:
 
 2023-12-24
  - Implemented functions to extract data via api.
+
+2023-12-28
+ - Inserting data into db, creating 'raw" tables and first sql statement to create a 'consumer' tabla
