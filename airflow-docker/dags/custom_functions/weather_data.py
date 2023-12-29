@@ -6,6 +6,7 @@ import datetime
 
 api_key = "695cc27371e94dbca45172359232412"
 base_url = "http://api.weatherapi.com/v1"
+save_path = ""
 
 def get_current_weather(api_key, location):
     base_url = "http://api.weatherapi.com/v1"
@@ -37,12 +38,12 @@ def get_cities_to_weather():
     cities = cities_upper
     return cities
 
-def get_last_7_days():
+def get_last_3days():
     today = datetime.datetime.now()
-    last_7_days = [ (today - datetime.timedelta(days=x)).strftime("%Y-%m-%d") for x in range(7) ]
-    return last_7_days
+    last_3days = [ (today - datetime.timedelta(days=x)).strftime("%Y-%m-%d") for x in range(3) ]
+    return last_3days
 
-def create_current_weather_file(cities):
+def create_current_weather_file(cities,save_path = save_path):
     current_df = pd.DataFrame()
     infos = ['query']
     for a in cities:
@@ -60,10 +61,10 @@ def create_current_weather_file(cities):
         current_df = pd.concat([current_df, pd.DataFrame(query_info)])
 
     current_data_raw = current_df.pivot(index='record_id', columns='info', values='value').reset_index()[infos]
-    current_data_raw.to_csv('current_data_raw.csv', index=False)
+    current_data_raw.to_csv(save_path + 'current_raw.csv', index=False)
     current_data_raw.head()
 
-def create_forecast_weather_file(cities):
+def create_forecast_weather_file(cities, save_path = save_path):
     current_df = pd.DataFrame()
     infos = ['query']
     for a in cities:
@@ -80,10 +81,28 @@ def create_forecast_weather_file(cities):
         current_df = pd.concat([current_df, pd.DataFrame(query_info)])
         
     forecast_raw = current_df.pivot(index='record_id', columns='info', values='value').reset_index()[infos]
-    forecast_raw.to_csv('forecast_raw.csv', index=False)
-    forecast_raw.head()
 
-def create_historical_weather_file(cities,historic_weather_days = get_last_7_days()):
+    df = forecast_raw.explode('forecastday')
+    df['date'] = df['forecastday'].apply(lambda x: x['date'])
+    df['day'] = df['forecastday'].apply(lambda x: x['day'])
+    df['maxtemp_c'] = df['day'].apply(lambda x: x['maxtemp_c'])
+    df['mintemp_c'] = df['day'].apply(lambda x: x['mintemp_c'])
+    df['avgtemp_c'] = df['day'].apply(lambda x: x['avgtemp_c'])
+    df['maxwind_kph'] = df['day'].apply(lambda x: x['maxwind_kph'])
+    df['totalprecip_mm'] = df['day'].apply(lambda x: x['totalprecip_mm'])
+    df['avgvis_km'] = df['day'].apply(lambda x: x['avgvis_km'])
+    df['avghumidity'] = df['day'].apply(lambda x: x['avghumidity'])
+    df['daily_will_it_rain'] = df['day'].apply(lambda x: x['daily_will_it_rain'])
+    df['daily_chance_of_rain'] = df['day'].apply(lambda x: x['daily_chance_of_rain'])
+    df['daily_will_it_snow'] = df['day'].apply(lambda x: x['daily_will_it_snow'])
+    df['daily_chance_of_snow'] = df['day'].apply(lambda x: x['daily_chance_of_snow'])
+    df['condition_text'] = df['day'].apply(lambda x: x['condition']['text'])
+    df['condition_icon'] = df['day'].apply(lambda x: x['condition']['icon'])
+    df['condition_code'] = df['day'].apply(lambda x: x['condition']['code'])
+    df = df.drop(columns=['forecastday'])
+    df.to_csv(save_path + 'forecast_raw.csv', index=False)
+
+def create_historical_weather_file(cities,historic_weather_days = get_last_3days(), save_path = save_path):
     current_df = pd.DataFrame()
     infos = ['query']
     days = historic_weather_days
@@ -121,5 +140,7 @@ def create_historical_weather_file(cities,historic_weather_days = get_last_7_day
     df['condition_text'] = df['day'].apply(lambda x: x['condition']['text'])
     df['condition_icon'] = df['day'].apply(lambda x: x['condition']['icon'])
     df['condition_code'] = df['day'].apply(lambda x: x['condition']['code'])
-    df = df.drop(columns=['forecastday', 'day'])
-    df.to_csv('history_raw.csv', index=False)
+    df = df.drop(columns=['forecastday'])
+    df.to_csv(save_path + 'history_raw.csv', index=False)
+
+aaaa = "x"
