@@ -1,10 +1,11 @@
 from airflow import DAG
 from airflow.operators.python_operator import PythonOperator
 import logging
+
 from custom_functions.weather_data import get_cities_to_weather, create_current_weather_file, create_historical_weather_file , create_forecast_weather_file
+from custom_functions.queries import create_curated_current,update_curated_current,create_curated_timeline,update_curated_timeline
 
 from datetime import datetime, timedelta
-import requests
 import pandas as pd
 import os
 import uuid
@@ -68,7 +69,7 @@ def download_historical_weather_data():
     df = pd.read_csv(read_path)
     logging.info(df.head())
 
-def currtent_weather_to_raw():
+def current_weather_to_raw():
 
     current = pd.read_csv('./dags/current_raw.csv')
     current['uuid'] = [uuid.uuid4() for _ in range(len(current))]
@@ -155,7 +156,41 @@ def history_weather_to_raw():
     except Exception as e:
         logging.info(f"Error {e}")
         raise e
+    
+def current_to_curated():
+    try:
+        conn = psycopg2.connect("dbname='postgres' user='root' host='172.19.0.1' password='root'")
+        cur = conn.cursor()
+        cur.execute("DROP TABLE IF EXISTS current_weather")
+        #create table
+        cur.execute(create_curated_current)
+        # add values to the table based on the raw
+        cur.execute(update_curated_current)
+        conn.commit()
+        cur.close()
+        conn.close()
+        logging.info("Table(current) updated successfully")
+    except Exception as e:
+        logging.info(f"Error {e}")
+        raise e
 
+def timeline_to_curated():
+    try:
+        conn = psycopg2.connect("dbname='postgres' user='root' host='172.19.0.1' password='root'")
+        cur = conn.cursor()
+        cur.execute("DROP TABLE IF EXISTS timeline_weather")
+        #create table
+        cur.execute(create_curated_timeline)
+        # add values to the table based on the raw
+        cur.execute(update_curated_timeline)
+        conn.commit()
+        cur.close()
+        conn.close()
+        logging.info("Table timeline updated successfully")
+    except Exception as e:
+        logging.info(f"Error {e}")
+        raise e
+     
 # Add the operators to the DAG
 hello = PythonOperator(
     task_id='hello',
@@ -187,9 +222,9 @@ download_historical_weather_data = PythonOperator(
     dag=dag
 )
 
-currtent_weather_to_raw = PythonOperator(
-    task_id='currtent_weather_to_raw',
-    python_callable=currtent_weather_to_raw,
+current_weather_to_raw = PythonOperator(
+    task_id='current_weather_to_raw',
+    python_callable=current_weather_to_raw,
     dag=dag
 )
 
@@ -205,12 +240,24 @@ history_weather_to_raw = PythonOperator(
     dag=dag
 )
 
+current_to_curated = PythonOperator(
+    task_id='current_to_curated',
+    python_callable=current_to_curated,
+    dag=dag
+)
+
+timeline_to_curated = PythonOperator(
+    task_id='timeline_to_curated',
+    python_callable=timeline_to_curated,
+    dag=dag
+)
+
 # Configure the task dependencies 
 
 hello >> download_current_weather_data
 hello >> download_forecast_weather_data
 hello >> download_historical_weather_data
 
-download_current_weather_data >> currtent_weather_to_raw >> bye_bye
-download_forecast_weather_data >> forecast_weather_to_raw >> bye_bye
-download_historical_weather_data >> history_weather_to_raw >> bye_bye
+download_current_weather_data >> current_weather_to_raw >> current_to_curated >> bye_bye
+download_forecast_weather_data >> forecast_weather_to_raw >> timeline_to_curated >> bye_bye
+download_historical_weather_data >> history_weather_to_raw >> timeline_to_curated >> bye_bye
