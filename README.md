@@ -2,7 +2,10 @@
 
 For this project I want to orchestrate a data pipiline using airflow, docker and postgress. Also create visualizations with an opens ource BI tool called metabase.
 
-Checkpoints:
+## Pipeline current state:
+![alt text](https://github.com/GuilherLRO/airflow_data_pipeline/blob/main/image_ckeckpoints/2024-01-07%20full%20pipeline.png?raw=true)
+
+## Checkpoints:
 
 2023-12-17
  - Created and tested the docker environment using a airflow dag to insert records in the database and visualize it in pgadmin.
