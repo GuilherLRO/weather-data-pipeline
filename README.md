@@ -12,3 +12,6 @@ Checkpoints:
 
 2023-12-29
  - Inserting data into db, creating 'raw" tables and first sql statement to create a 'consumer' tabla
+
+2024-01-07
+- Creating "curated" zone with tables ready to be consumed. Simplified download to raw process that was making some transformations now made in the database.
